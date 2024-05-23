@@ -3,11 +3,13 @@
 # This script
 function hello_git
 {
-    echo "-------------------------------------------------------"
+    echo "-------------"
+    git config user.name "Nikita Chernyshev"
+    git config user.email "nikitosss140604@gmail.com"
 }
 
 # This script
-function gs
+function gst
 {
     echo "---- Information about a git in the current folder ----"
     echo "-------------------------------------------------------"
