@@ -20,20 +20,22 @@ function showip
     interface=$1
 
     # Получить динамический IP-адрес
-    dynamic_ip=$(ip addr show $interface | grep 'inet\ .*dynamic' | awk '{print $2}')
+    dynamic_ip=$(ip addr show $interface | grep 'dynamic' | awk '{print $2}' | cut -f1 -d'/')
 
     # Проверить, установлен ли статический IP-адрес
-    static_ip=$(ip addr show $interface | grep 'inet\ .*brd' | awk '{print $2}')
+    static_ip=$(ip addr show | grep -v "dynamic" | grep 'inet\ .*noprefix' | awk '{print $2}' | cut -f1 -d'/')
 
-    # Если статический IP-адрес не установлен, вывести сообщение
-    if [ -z "$static_ip" ]; then
-    echo "Статический IP-адрес не установлен."
+    if [ -z "$dynamic_ip" ]; then
+        echo "Динамический IP-адрес не установлен."
     else
-    # Вывести статический IP-адрес
-    echo "Статический IP-адрес: $static_ip"
+        # Вывести динамический IP-адрес
+        echo "Динамический IP-адрес: $dynamic_ip"
     fi
 
-    # Вывести динамический IP-адрес
-    echo "Динамический IP-адрес: $dynamic_ip"
-
+    if [ -z "$static_ip" ]; then
+        echo "Статический IP-адрес не установлен."
+    else
+        # Вывести статический IP-адрес
+        echo "Статический IP-адрес: $static_ip"
+    fi
 }
