@@ -9,15 +9,15 @@ function setsrc
     echo "source $(pwd)/install/setup.bash"
 }
 
+# Получить имена сетевых устройств
+wifi_device=$(nmcli device status | grep 'wifi ' | awk '{print $1}')
+eth_device=$(nmcli device status | grep 'ethernet ' | awk '{print $1}')
+
 # This script
 function showip
 {
     echo "-------------------------------------------------------"
     
-    # Получить имена сетевых устройств
-    wifi_device=$(nmcli device status | grep 'wifi ' | awk '{print $1}')
-    eth_device=$(nmcli device status | grep 'ethernet ' | awk '{print $1}')
-
     if [ -z "$1" ]; then
 
         # Получить IP-адреса
@@ -85,4 +85,36 @@ function showip
             nmcli device status
         fi
     fi
+}
+
+# This script
+function wifi
+{
+    if [ "$1" = "on" ]; then
+        nmcli radio wifi on
+        echo "Wifi устройство $wifi_device - включено"
+    fi
+    
+    if [ "$1" = "off" ]; then
+        nmcli radio wifi off
+        echo "Wifi устройство $wifi_device - отключено"
+    fi
+
+    if [ "$1" = "list" ]; then
+        echo "---------- Список Wifi сетей ----------"
+        nmcli device wifi rescan 
+        nmcli device wifi list
+    fi
+
+    if [ "$1" = "connect" ]; then
+        echo "---------- Подключение к сети Wifi - $2 ----------"
+        nmcli device wifi rescan
+        nmcli device wifi connect $2 password $3
+    fi
+
+    if [ "$1" = "passwd" ]; then
+        echo "---------- Пароль текущей Wifi сети ----------"
+        sudo nmcli device wifi show-password
+    fi
+
 }
